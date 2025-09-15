@@ -3,6 +3,7 @@ import { describe, it } from "vitest";
 import { extractTestAnnotations } from "./parser/clarity-parser";
 import { expectOkTrue, isValidTestFunction } from "./parser/test-helpers";
 import { FunctionAnnotations } from "./parser/clarity-parser-flow-tests";
+import { getCaller } from "./clarunit-utils";
 
 /**
  * Returns true if the contract is a test contract
@@ -55,13 +56,7 @@ export function generateUnitTests(simnet: Simnet) {
             delete functionAnnotations.prepare;
 
           // handle caller address for this test
-          const callerAddress =
-            functionAnnotations.caller &&
-            typeof functionAnnotations.caller === "string"
-              ? functionAnnotations.caller[0] === "'"
-                ? `${(functionAnnotations.caller as string).substring(1)}`
-                : accounts.get(functionAnnotations.caller)!
-              : accounts.get("deployer")!;
+          const callerAddress = getCaller(functionAnnotations, accounts);
 
           if (functionAnnotations.prepare) {
             // mine block with prepare function call

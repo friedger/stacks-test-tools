@@ -1,7 +1,7 @@
 ;; @name test block height at launch
 (define-public (test-block-height-at-launch)
   (begin
-    ;; @caller wallet_1
+    ;; @caller 'SP1T91N2Y2TE5M937FE3R6DE0HGWD85SGCV50T95A
     (try! (assert-block-height-3))
     ;; @mine-blocks-before 10
     ;; @caller wallet_1
