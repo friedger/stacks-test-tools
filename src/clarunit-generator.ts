@@ -1,15 +1,13 @@
 import { Simnet, tx } from "@hirosystems/clarinet-sdk";
 import { describe, it } from "vitest";
-import {
-  extractTestAnnotations,
-} from "./parser/clarity-parser";
+import { extractTestAnnotations } from "./parser/clarity-parser";
 import { expectOkTrue, isValidTestFunction } from "./parser/test-helpers";
 import { FunctionAnnotations } from "./parser/clarity-parser-flow-tests";
 
 /**
  * Returns true if the contract is a test contract
  * @param contractName name of the contract
- * @returns 
+ * @returns
  */
 function isTestContract(contractName: string) {
   return (
@@ -44,10 +42,11 @@ export function generateUnitTests(simnet: Simnet) {
           annotations[functionName] || {};
 
         const mineBlocksBefore =
-          parseInt(annotations["mine-blocks-before"] as string) || 0;
+          parseInt(functionAnnotations["mine-blocks-before"] as string) || 0;
 
-        const testDescription = `${functionCall.name}${functionAnnotations.name ? `: ${functionAnnotations.name}` : ""
-          }`;
+        const testDescription = `${functionCall.name}${
+          functionAnnotations.name ? `: ${functionAnnotations.name}` : ""
+        }`;
         it(testDescription, () => {
           // handle prepare function for this test
           if (hasDefaultPrepareFunction && !functionAnnotations.prepare)
@@ -56,11 +55,13 @@ export function generateUnitTests(simnet: Simnet) {
             delete functionAnnotations.prepare;
 
           // handle caller address for this test
-          const callerAddress = functionAnnotations.caller && typeof functionAnnotations.caller === "string"
-            ? functionAnnotations.caller[0] === "'"
-              ? `${(functionAnnotations.caller as string).substring(1)}`
-              : accounts.get(functionAnnotations.caller)!
-            : accounts.get("deployer")!;
+          const callerAddress =
+            functionAnnotations.caller &&
+            typeof functionAnnotations.caller === "string"
+              ? functionAnnotations.caller[0] === "'"
+                ? `${(functionAnnotations.caller as string).substring(1)}`
+                : accounts.get(functionAnnotations.caller)!
+              : accounts.get("deployer")!;
 
           if (functionAnnotations.prepare) {
             // mine block with prepare function call
