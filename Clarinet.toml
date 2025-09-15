@@ -11,6 +11,11 @@ path = "tests/contracts/generator-tests/annotations_test.clar"
 clarity_version = 3
 epoch = "3.1"
 
+[contracts.annotations_flow_test]
+path = "tests/contracts/generator-tests/annotations_flow_test.clar"
+clarity_version = 3
+epoch = "3.1"
+
 [repl.analysis]
 passes = ['check_checker']
 
