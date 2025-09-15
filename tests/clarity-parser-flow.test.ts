@@ -53,6 +53,14 @@ describe("verify clarity parser for flow tests", () => {
         functionName: "allow-contract-caller",
       },
     });
+    expect(callInfos["test-simple-flow"][3]).toEqual({
+      callAnnotations: { caller: "'ST000000000000000000002AMW42H" },
+      callInfo: {
+        args: [],
+        contractName: "",
+        functionName: "my-test-function",
+      },
+    });
   });
 
   it("should parse flow test with bad annotations", () => {

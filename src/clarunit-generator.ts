@@ -56,10 +56,10 @@ export function generateUnitTests(simnet: Simnet) {
             delete functionAnnotations.prepare;
 
           // handle caller address for this test
-          const callerAddress = functionAnnotations.caller
-            ? annotations.caller[0] === "'"
-              ? `${(annotations.caller as string).substring(1)}`
-              : accounts.get(annotations.caller)!
+          const callerAddress = functionAnnotations.caller && typeof functionAnnotations.caller === "string"
+            ? functionAnnotations.caller[0] === "'"
+              ? `${(functionAnnotations.caller as string).substring(1)}`
+              : accounts.get(functionAnnotations.caller)!
             : accounts.get("deployer")!;
 
           if (functionAnnotations.prepare) {
