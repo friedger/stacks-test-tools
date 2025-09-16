@@ -114,7 +114,7 @@ export function extractContractCalls(lastFunctionBody: string, simnet: Simnet) {
       if (prop) callAnnotations[prop] = value ?? true;
     }
     // try to extract call info from (unwrap! (contract-call? ...))
-    let callInfo = extractUnwrapInfo(call, simnet);
+    let callInfo = extractUnwrapInfo(call, simnet, callAnnotations);
     if (!callInfo) {
       // try to extract call info from (try! (my-function))
       callInfo = extractTryInfo(call);
@@ -133,9 +133,13 @@ export function extractContractCalls(lastFunctionBody: string, simnet: Simnet) {
  * @param statement
  * @returns
  */
-function extractUnwrapInfo(statement: string, simnet: Simnet): CallInfo | null {
+function extractUnwrapInfo(
+  statement: string,
+  simnet: Simnet,
+  callAnnotations: FunctionAnnotations
+): CallInfo | null {
   const match = statement.match(
-    /\(unwrap! \(contract-call\? (?:\.(.+?)|'(.+?)) (.+?)(( .+?)*)\)/
+    /\(unwrap!\s+\(contract-call\?\s+(?:\.(.+?)|'(.+?))\s+(.+?)((\s+.+?)*)\)/m
   );
   if (!match) return null;
   // match[1] is the contract address,
@@ -155,7 +159,15 @@ function extractUnwrapInfo(statement: string, simnet: Simnet): CallInfo | null {
     }
   });
   if (!fn) {
-    throw `function ${functionName} not found in contract ${contractName}`;
+    if (callAnnotations["type-hints"]) {
+      fn = {
+        args: (callAnnotations["type-hints"] as string)
+          .split(",")
+          .map((s) => ({ type: s.trim() })),
+      };
+    } else {
+      throw `function ${functionName} not found in contract ${contractName} and not type-hints provided`;
+    }
   }
   const args = fn.args.map((arg: any, index: number) =>
     stringToCV(argStrings[index], arg.type)

@@ -75,6 +75,13 @@ export function stringToCV(
         : { type: "principal", value: Cl.standardPrincipal(address) };
     case "bool":
       return { type: "bool", value: Cl.bool(arg === "true") };
+    case "trait_reference":
+      console.log("trait_reference", arg);
+      const [addressTrait, nameTrait] = arg.split(".");
+      return {
+        type: "trait_reference",
+        value: Cl.contractPrincipal(addressTrait.substring(1), nameTrait),
+      };
   }
   const typeDescriptor = Object.keys(type)[0];
   switch (typeDescriptor) {
