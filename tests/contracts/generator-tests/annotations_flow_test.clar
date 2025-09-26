@@ -12,8 +12,8 @@
 
 (define-public (assert-block-height-3)
   (begin
-    (asserts! (is-eq u3 stacks-block-height)
-      (err (concat "expected block height 3, found "
+    (asserts! (is-eq u3491158 stacks-block-height)
+      (err (concat "expected block height 3491158, found "
         (int-to-ascii stacks-block-height)
       ))
     )
@@ -23,8 +23,8 @@
 
 (define-public (assert-block-height-13)
   (begin
-    (asserts! (is-eq u13 stacks-block-height)
-      (err (concat "expected block height 13, found "
+    (asserts! (is-eq u3491168 stacks-block-height)
+      (err (concat "expected block height 3491168, found "
         (int-to-ascii stacks-block-height)
       ))
     )

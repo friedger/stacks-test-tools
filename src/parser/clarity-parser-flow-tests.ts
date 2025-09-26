@@ -163,10 +163,10 @@ function extractUnwrapInfo(
       fn = {
         args: (callAnnotations["type-hints"] as string)
           .split(",")
-          .map((s) => ({ type: s.trim() })),
+          .map((s) => ({ type: parseTypeHint(s.trim()) })),
       };
     } else {
-      throw `function ${functionName} not found in contract ${contractName} and not type-hints provided`;
+      throw `function ${functionName} of ${contractName} not found in Clarinet toml and no type-hints provided`;
     }
   }
   const args = fn.args.map((arg: any, index: number) =>
@@ -219,4 +219,47 @@ function splitArgs(argString: string): string[] {
   }
 
   return splitArgs;
+}
+
+/**
+ * Parse type hint string into ContractInterfaceAtomType
+ * @param typeHint string like "uint128", "(optional uint128)", etc.
+ * @returns ContractInterfaceAtomType
+ */
+function parseTypeHint(typeHint: string): any {
+  typeHint = typeHint.trim();
+
+  // Handle parentheses wrapped types like (optional uint128)
+  if (typeHint.startsWith("(") && typeHint.endsWith(")")) {
+    const inner = typeHint.slice(1, -1).trim();
+    const parts = inner.split(" ");
+
+    if (parts[0] === "optional") {
+      return {
+        optional: parseTypeHint(parts.slice(1).join(" ")),
+      };
+    }
+
+    // Add other complex type handling as needed
+  }
+
+  // Handle simple types
+  switch (typeHint) {
+    case "uint":
+    case "uint128":
+      return "uint128";
+    case "int":
+    case "int128":
+      return "int128";
+    case "bool":
+      return "bool";
+    case "principal":
+      return "principal";
+    case "trait_reference":
+      return "trait_reference";
+    case "none":
+      return "none";
+    default:
+      throw new Error(`Unsupported type hint: ${typeHint}`);
+  }
 }

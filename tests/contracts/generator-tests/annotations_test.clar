@@ -2,8 +2,8 @@
 ;; One block is need to advance to epoch 2.5
 (define-public (test-block-height-at-launch)
   (begin
-    (asserts! (is-eq u3 stacks-block-height)
-      (err (concat "expected block height 3, found "
+    (asserts! (is-eq u3491158 stacks-block-height)
+      (err (concat "expected block height 3491158, found "
         (int-to-ascii stacks-block-height)
       ))
     )
@@ -14,8 +14,8 @@
 ;; @mine-blocks-before 10
 (define-public (test-mine-blocks-before)
   (begin
-    (asserts! (is-eq u13 stacks-block-height)
-      (err (concat "expected block height 13, found "
+    (asserts! (is-eq u3491168 stacks-block-height)
+      (err (concat "expected block height 3491168, found "
         (int-to-ascii stacks-block-height)
       ))
     )
@@ -26,10 +26,10 @@
 ;; @caller wallet_1
 (define-public (test-caller)
   (begin
-    (asserts! (is-eq tx-sender 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5)
+    (asserts! (is-eq tx-sender 'SP1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2XG1V316)
       (err tx-sender)
     )
-    (asserts! (is-eq contract-caller 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5)
+    (asserts! (is-eq contract-caller 'SP1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2XG1V316)
       (err contract-caller)
     )
     (ok true)

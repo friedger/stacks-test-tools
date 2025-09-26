@@ -31,7 +31,10 @@ describe("verify clarity parser for flow tests", () => {
       },
     });
     expect(callInfos["test-simple-flow"][2]).toEqual({
-      callAnnotations: { caller: "wallet_1" },
+      callAnnotations: {
+        caller: "wallet_1",
+        "type-hints": "principal, (optional uint)",
+      },
       callInfo: {
         args: [
           {
@@ -39,7 +42,7 @@ describe("verify clarity parser for flow tests", () => {
             value: {
               type: "contract",
               value:
-                "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.pox4-self-service-multi",
+                "SP1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRCBGD7R.pox4-self-service-multi",
             },
           },
           {

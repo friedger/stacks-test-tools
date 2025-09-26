@@ -32,11 +32,11 @@
   },
   "homepage": "https://github.com/stacks-network/clarunit#readme",
   "dependencies": {
-    "@hirosystems/clarinet-sdk": "3.1.0",
+    "@hirosystems/clarinet-sdk": "3.7.0",
     "@stacks/common": "^7.0.2",
-    "@stacks/transactions": "7.1.0",
+    "@stacks/transactions": "7.2.0",
     "chokidar-cli": "^3.0.0",
-    "typescript": "5.8.3",
+    "typescript": "5.9.2",
     "vite": "6.3.5",
     "vitest": "3.2.3",
     "vitest-environment-clarinet": "2.3.0"

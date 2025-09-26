@@ -63,6 +63,8 @@ export function stringToCV(
       return { type: "uint", value: Cl.uint(arg.slice(1)) };
     case "int128":
       return { type: "int", value: Cl.int(arg) };
+    case "bool":
+      return { type: "bool", value: Cl.bool(arg === "true") };
     case "principal":
       const [address, name] = arg.split(".");
       return name
@@ -73,14 +75,15 @@ export function stringToCV(
               value: Cl.contractPrincipal(simnet.deployer, name),
             }
         : { type: "principal", value: Cl.standardPrincipal(address) };
-    case "bool":
-      return { type: "bool", value: Cl.bool(arg === "true") };
     case "trait_reference":
-      console.log("trait_reference", arg);
       const [addressTrait, nameTrait] = arg.split(".");
       return {
         type: "trait_reference",
-        value: Cl.contractPrincipal(addressTrait.substring(1), nameTrait),
+        value: Cl.contractPrincipal(
+          // handle both fully qualified contract ids and .contract-name
+          addressTrait.length > 1 ? addressTrait.substring(1) : simnet.deployer,
+          nameTrait
+        ),
       };
   }
   const typeDescriptor = Object.keys(type)[0];
@@ -118,7 +121,7 @@ export function stringToCV(
         };
       }
     default:
-      throw new Error(`Unsupported type ${type}`);
+      throw new Error(`Unsupported type ${arg}, ${typeDescriptor}`);
   }
 }
 
