@@ -24,6 +24,16 @@ path = "tests/contracts/generator-tests/contract-call_flow_test.clar"
 clarity_version = 3
 epoch = "3.1"
 
+[contracts.list-args_flow_test]
+path = "tests/contracts/generator-tests/list-args_flow_test.clar"
+clarity_version = 3
+epoch = "3.1"
+
+[contracts.some-contract]
+path = "tests/contracts/some-contract.clar"
+clarity_version = 3
+epoch = "3.1"
+
 [repl.analysis]
 passes = ['check_checker']
 

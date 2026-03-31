@@ -1,4 +1,4 @@
-import { ParsedTransactionResult, tx } from "@hirosystems/clarinet-sdk";
+import { ParsedTransactionResult, tx } from "@stacks/clarinet-sdk";
 import * as fs from "fs";
 import { describe, it } from "vitest";
 import {

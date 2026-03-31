@@ -138,16 +138,37 @@ function extractUnwrapInfo(
   simnet: Simnet,
   callAnnotations: FunctionAnnotations
 ): CallInfo | null {
+  // Match contract-call header only (contract + function name).
+  // Args are extracted separately using balanced-paren counting
+  // to avoid catastrophic backtracking with nested list/tuple args.
   const match = statement.match(
-    /\(unwrap!\s+\(contract-call\?\s+(?:\.(.+?)|'(.+?))\s+(.+?)((\s+.+?)*)\)/m
+    /\(unwrap!\s+\(contract-call\?\s+(?:\.(\S+)|'(\S+))\s+(\S+)/m
   );
   if (!match) return null;
+
+  // Find args: everything between the function name and the balanced
+  // closing paren of (contract-call? ...)
+  const headerEnd = match.index! + match[0].length;
+  let depth = 2; // we're inside (unwrap! (contract-call? ...
+  let contractCallClose = -1;
+  for (let i = headerEnd; i < statement.length; i++) {
+    if (statement[i] === "(") depth++;
+    if (statement[i] === ")") depth--;
+    if (depth === 1) {
+      // found closing ) of (contract-call? ...)
+      contractCallClose = i;
+      break;
+    }
+  }
+  if (contractCallClose === -1) return null;
+  const argsRaw = statement.slice(headerEnd, contractCallClose);
+
   // match[1] is the contract address,
   const [contractAddress, contractName] = match[2]
     ? match[2].split(".")
     : [simnet.deployer, match[1]];
   const functionName = match[3];
-  const argStrings = splitArgs(match[4]);
+  const argStrings = splitArgs(argsRaw);
   let fn: any;
   simnet.getContractsInterfaces().forEach((contract, contractFQN) => {
     const [ctrAddress, ctrName] = contractFQN.split(".");
@@ -208,8 +229,9 @@ function splitArgs(argString: string): string[] {
     if (char === "(") rbrackets++;
     if (char === ")") rbrackets--;
 
+    const isWhitespace = char === " " || char === "\n" || char === "\t" || char === "\r";
     const atLastChar = i === argString.length - 1;
-    if ((char === " " && brackets === 0 && rbrackets === 0) || atLastChar) {
+    if ((isWhitespace && brackets === 0 && rbrackets === 0) || atLastChar) {
       const newArg = argString.slice(argStart, i + (atLastChar ? 1 : 0));
       if (newArg.trim()) {
         splitArgs.push(newArg.trim());

@@ -120,6 +120,31 @@ export function stringToCV(
           ),
         };
       }
+    case "list": {
+      const listType = (type as { list: { type: ContractInterfaceAtomType; length: number } }).list;
+      // strip outer (list ... )
+      const inner = arg.replace(/^\(list\s*/, "").replace(/\)$/, "").trim();
+      if (!inner) {
+        return { type: "list", value: Cl.list([]) };
+      }
+      // split list elements respecting nested parens/braces
+      const elements: string[] = [];
+      let start = 0;
+      let depth = 0;
+      for (let i = 0; i < inner.length; i++) {
+        if (inner[i] === "(" || inner[i] === "{") depth++;
+        if (inner[i] === ")" || inner[i] === "}") depth--;
+        if ((inner[i] === " " && depth === 0) || i === inner.length - 1) {
+          const el = inner.slice(start, i + (i === inner.length - 1 ? 1 : 0)).trim();
+          if (el) elements.push(el);
+          start = i + 1;
+        }
+      }
+      const values = elements.map(
+        (el) => stringToCV(el, listType.type).value
+      );
+      return { type: "list", value: Cl.list(values) };
+    }
     default:
       throw new Error(`Unsupported type ${arg}, ${typeDescriptor}`);
   }

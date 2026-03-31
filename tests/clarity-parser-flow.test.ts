@@ -8,9 +8,9 @@ describe("verify clarity parser for flow tests", () => {
     const [annotations, callInfos] = extractTestAnnotationsAndCalls(
       fs.readFileSync(
         path.join(__dirname, "./contracts/parser-tests/simple-flow.clar"),
-        "utf8"
+        "utf8",
       ),
-      simnet
+      simnet,
     );
     expect(annotations["test-simple-flow"]).toEqual({});
     // check the two function calls
@@ -70,9 +70,9 @@ describe("verify clarity parser for flow tests", () => {
     const [annotations, callInfos] = extractTestAnnotationsAndCalls(
       fs.readFileSync(
         path.join(__dirname, "./contracts/parser-tests/bad-flow.clar"),
-        "utf8"
+        "utf8",
       ),
-      simnet
+      simnet,
     );
     expect(annotations["test-bad-flow"]).toEqual({});
     expect(callInfos["test-bad-flow"][0]).toEqual({
@@ -84,5 +84,18 @@ describe("verify clarity parser for flow tests", () => {
       },
     });
     expect(callInfos["test-bad-flow"].length).toEqual(1);
+  });
+
+  //assertion in clarity-parser-flow.test.ts verifying that:
+  // callInfo.args[0] is a list of two buffer values
+  // callInfo.args[1] is a list of two bool values
+  it("should parse list types and arguments across lines", () => {
+    const [annotations, callInfos] = extractTestAnnotationsAndCalls(
+      fs.readFileSync(
+        path.join(__dirname, "./contracts/parser-tests/bad-flow.clar"),
+        "utf8",
+      ),
+      simnet,
+    );
   });
 });

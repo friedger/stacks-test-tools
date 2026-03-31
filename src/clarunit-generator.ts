@@ -1,4 +1,4 @@
-import { Simnet, tx } from "@hirosystems/clarinet-sdk";
+import { Simnet, tx } from "@stacks/clarinet-sdk";
 import { describe, it } from "vitest";
 import { extractTestAnnotations } from "./parser/clarity-parser";
 import { expectOkTrue, isValidTestFunction } from "./parser/test-helpers";
